@@ -1,0 +1,31 @@
+name: Release
+
+# Push a tag like v1.0.0 -> builds ExcelColumnWidth.oxt and publishes a GitHub release.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check tag matches description.xml version
+        run: |
+          v=$(grep -oP '<version value="\K[^"]+' src/description.xml)
+          if [ "v$v" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::src/description.xml has version $v but tag is $GITHUB_REF_NAME"
+            exit 1
+          fi
+
+      - name: Build
+        run: ./build.sh
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" ExcelColumnWidth.oxt --title "$GITHUB_REF_NAME" --generate-notes

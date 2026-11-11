@@ -1,0 +1,4 @@
+Shows Calc column widths in Excel units (as displayed in Excel's UI) and in
+NPOI / Apache POI units (1/256 character), live while you select or resize
+columns. Widths can also be set by typing an Excel value.
+Open the panel with Ctrl+Shift+W, the toolbar button, or Tools > Add-Ons.
